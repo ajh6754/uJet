@@ -12,6 +12,6 @@ public class welcome {
 
     @FXML
     private void switchToStart() throws IOException {
-        App.setRoot("settings"); // change to start
+        App.setRoot("start");
     }
 }
