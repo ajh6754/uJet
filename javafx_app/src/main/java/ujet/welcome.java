@@ -2,25 +2,28 @@ package ujet;
 
 import static java.lang.Thread.interrupted;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
 
+import com.assemblyai.api.AssemblyAI;
 import com.assemblyai.api.RealtimeTranscriber;
 import com.assemblyai.api.resources.realtime.types.FinalTranscript;
 import com.assemblyai.api.resources.realtime.types.PartialTranscript;
+import com.assemblyai.api.resources.transcripts.types.Transcript;
+import com.assemblyai.api.resources.transcripts.types.TranscriptOptionalParams;
 
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Screen;
@@ -30,6 +33,7 @@ import javafx.scene.input.KeyCode;
 public class welcome {
 
     public TextArea textArea = new TextArea();
+    
 
     public boolean running = true;
 
@@ -63,12 +67,38 @@ public class welcome {
             // `line` is your microphone
             TargetDataLine line = AudioSystem.getTargetDataLine(format);
             line.open(format);
+            
+            File file = new File("file.aiff");
             byte[] data = new byte[line.getBufferSize()];
             line.start();
+
+            // write to file
+            AudioInputStream audioInputStream = new AudioInputStream(line);
+            try {
+            // AudioFileFormat fileFormat = new AudioFileFormat(AudioFileFormat.Type.AIFF, format, 16);
+            
             while (!interrupted() && running) {
                 // Read the next chunk of data from the TargetDataLine.
-                line.read(data, 0, data.length);
+                // line.read(data, 0, data.length);
+                audioInputStream.read(data, 0, data.length);
                 realtimeTranscriber.sendAudio(data);
+                // byte_stream = new ByteArrayInputStream(data);
+                new Thread(() -> {
+                    try {
+                    AudioSystem.write(audioInputStream, AudioFileFormat.Type.AIFF, file);
+                    } catch(Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            } finally {
+                try {
+                    audioInputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
 
             System.out.println("Stopping recording");
@@ -187,5 +217,34 @@ public class welcome {
         text = text + " " + transcript.getText();
         textArea.setText(text);
         current_sentence = "";
+
+        
+        // send the sentence for sentiment analysis
+        // AssemblyAI client = AssemblyAI.builder()
+        //     .apiKey("cebb373d43634ade8fa2a0b9bee83808" )
+        //     .build();
+            
+        // var params = TranscriptOptionalParams.builder()
+        //     .sentimentAnalysis(true)
+        //     .build();
+            
+        // try {
+        //     // Transcript sentimentTranscript = client.transcripts().transcribe(file, params);
+        //     System.out.println("beginning sentiment analysis");
+        //     if (file.exists()){
+        //         System.out.println("deleting file");
+        //         file.delete();
+        //         System.out.println("file deleted");
+        //     }  
+        //     // var sentimentAnalysisResults = sentimentTranscript.getSentimentAnalysisResults().get();
+        //     // sentimentAnalysisResults.forEach(result -> {
+        //     //     System.out.println(result.getText());
+        //     //     System.out.println(result.getSentiment()); // POSITIVE, NEUTRAL, or NEGATIVE
+        //     //     System.out.println(result.getConfidence());
+        //     //     System.out.println("Timestamp: " + result.getStart() + " - " + result.getEnd());
+        //     // });
+        // } catch (Exception e) {
+        //     throw new RuntimeException(e);
+        // }
     }
 }
