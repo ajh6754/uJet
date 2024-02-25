@@ -31,6 +31,16 @@ public class welcome {
 
     public TextArea textArea = new TextArea();
 
+    public boolean running = true;
+
+    public Stage startStage;
+
+    private double xOffset = 0;
+    private double yOffset = 0;
+
+    public String text = "";
+    public String current_sentence = "";
+
     Thread thread = new Thread(() -> {
         try {
             RealtimeTranscriber realtimeTranscriber = RealtimeTranscriber.builder()
@@ -48,14 +58,14 @@ public class welcome {
             realtimeTranscriber.connect();
 
             // This is where the magic happens
-            System.out.println("Starting recording");
+            System.out.println("Starting recording!");
             AudioFormat format = new AudioFormat(16_000, 16, 1, true, false);
             // `line` is your microphone
             TargetDataLine line = AudioSystem.getTargetDataLine(format);
             line.open(format);
             byte[] data = new byte[line.getBufferSize()];
             line.start();
-            while (!interrupted()) {
+            while (!interrupted() && running) {
                 // Read the next chunk of data from the TargetDataLine.
                 line.read(data, 0, data.length);
                 realtimeTranscriber.sendAudio(data);
@@ -70,11 +80,6 @@ public class welcome {
             throw new RuntimeException(e);
         }
     });
-
-    private Stage startStage = null;
-
-    private double xOffset = 0;
-    private double yOffset = 0;
 
     @FXML
     private void switchToSettings() throws IOException {
@@ -99,6 +104,13 @@ public class welcome {
             textArea.setStyle("-fx-text-fill: black; -fx-font-size: 20;");
             textArea.appendText("This is a conversation\n" + "Very interesting :D");
             thread.start();
+            
+            startStage.setOnCloseRequest(event -> {
+                thread.interrupt(); // Interrupt the thread
+                System.out.println("Closing");
+            });
+
+
 
             // Create a ScrollPane and add the TextArea to it
             ScrollPane scrollPane = new ScrollPane(textArea);
@@ -113,6 +125,7 @@ public class welcome {
             // Create a new Scene for the Stage
             Scene scene = new Scene(vbox, 1000, 150);
             //scene.setFill(null);
+
 
             // Handle dragging
             vbox.setOnMousePressed(event -> {
@@ -132,6 +145,7 @@ public class welcome {
                         startStage.close();
                         thread.interrupt();
                         System.out.println("CLOSING");
+                        running = false;
                     }
                     try {
                         App.setRoot("welcome"); // Switch back to the welcome page
@@ -141,6 +155,7 @@ public class welcome {
                     }
                 }
             });
+            
 
             // set location of transcribe box
             double screenHeight = Screen.getPrimary().getVisualBounds().getHeight();
@@ -158,9 +173,6 @@ public class welcome {
             ((Stage) App.getScene().getWindow()).hide();
         }
     }
-        
-    public String text = "";
-    public String current_sentence = "";
 
     public void handlePartialTranscript(PartialTranscript transcript) {
         if (!transcript.getText().isEmpty()) {
