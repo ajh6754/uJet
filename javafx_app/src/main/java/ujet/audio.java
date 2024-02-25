@@ -16,6 +16,8 @@ import javax.sound.sampled.AudioSystem;
 
 import javafx.fxml.FXML;
 
+//import org.jitsi.*;
+
 // if we can somehow access the software mixer, we should be able to have access to the apps sending info to the mixer?
 
 public class audio {
@@ -160,5 +162,10 @@ public class audio {
     private void getInfo()
     {
 
+    }
+
+    @FXML
+    private void saveSettings(){
+        
     }
 }

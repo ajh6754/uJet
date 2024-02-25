@@ -25,6 +25,11 @@
             <artifactId>javafx-fxml</artifactId>
             <version>13</version>
         </dependency>
+        <dependency>
+            <groupId>com.assemblyai</groupId>
+            <artifactId>assemblyai-java</artifactId>
+            <version>1.0.6</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

@@ -20,28 +20,34 @@
         <!-- DEALS WITH FONT SIZE -->
         <HBox alignment="CENTER" spacing="20.0">
             <!-- CONSIDER CUSTOM FONTS AS WELL -->
-            <Label text="Adjust font size" />
-            <!-- PLACEHOLDER, RESOLVE TO VARIABLE LATER, FIGURE OUT SIZELATER -->
-            <TextField />
+            <Label text="Adjust Font Size" />
+            <TextField fx:id="txtFontField" promptText="Enter size" />
+            <Button fx:id="adjustFontSizeButton" text="Adjust Font Size" onAction="#adjustFontSize" />
+        </HBox>
+        <!-- DEALS WITH TEXT COLOR -->
+        <HBox alignment="CENTER" spacing="20.0">
+            <Label text="Adjust Text Color" />
+            <TextField fx:id="txtColorField" promptText="Enter color" />
+            <Button fx:id="adjustTxtColorButton" text="Adjust Text Color" onAction="#adjustTxtColor" />
         </HBox>
         <!-- COLOR CODE FOR DIFFERENT APPS? -->
-        <HBox alignment="CENTER" spacing="20.0">
-            <Label text="Adjust App Color Codes" />
+        <!-- <HBox alignment="CENTER" spacing="20.0"> -->
+            <!-- <Label text="Adjust App Color Codes" /> -->
             <!-- DOES NOTHING, SHOULD OPEN WINDOW TO SELECT APPLICATIONS AND COLORS -->
-            <Button fx:id="selectAppColor" text="App Color Codes"/>
-        </HBox>
+            <!-- <Button fx:id="selectAppColor" text="App Color Codes"/> -->
+        <!-- </HBox> -->
         <!-- TEXT HIGHLIGHT -->
-        <HBox alignment="CENTER" spacing="20.0">
-            <Label text="Select Text Highlight" />
+        <!-- <HBox alignment="CENTER" spacing="20.0"> -->
+            <!-- <Label text="Select Text Highlight" /> -->
             <!-- FIGURE OUT HOW TO DEAL WITH THAT LATER, DROPDOWN PERHAPS -->
             <!-- <ComboBox fx:id="gameTypeCombo" layoutX="7.0" layoutY="20.0" prefWidth="150.0" />-->
-        </HBox>
+        <!-- </HBox> -->
         <!-- OPACITY SETTINGS, TODO -->
-        <HBox alignment="CENTER" spacing="20.0">
-            <Label text="Select Opacity" />
+        <!-- <HBox alignment="CENTER" spacing="20.0"> -->
+            <!-- <Label text="Select Opacity" /> -->
             <!-- FIGURE OUT HOW TO DEAL WITH THIS LATER, HAVE A SLIDER FROM 0-100? -->
-            <TextField />
-        </HBox>
+            <!-- <TextField /> -->
+        <!-- </HBox> -->
 
         <!-- IMPORTANT! USER CAN SPECIFY SIZE OF WINDOW! -->
 
