@@ -17,8 +17,10 @@ import com.assemblyai.api.resources.realtime.types.PartialTranscript;
 
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -33,7 +35,11 @@ public class welcome {
 
     public TextArea textArea = new TextArea();
 
+    public CheckBox checkbox = new CheckBox();
+
     public boolean running = true;
+
+    public boolean scrolling = false;
 
     public Stage startStage;
 
@@ -124,7 +130,6 @@ public class welcome {
             });
 
 
-
             // Create a ScrollPane and add the TextArea to it
             ScrollPane scrollPane = new ScrollPane(textArea);
             scrollPane.setFitToWidth(true);
@@ -132,13 +137,19 @@ public class welcome {
             scrollPane.setContent(textArea);
             
             // Create a VBox and add the ScrollPane to it
-            VBox vbox = new VBox(scrollPane);
-            VBox.setVgrow(scrollPane, javafx.scene.layout.Priority.ALWAYS);
+            VBox vbox = new VBox();
+            vbox.getChildren().addAll(scrollPane, checkbox);
             
             // Create a new Scene for the Stage
             Scene scene = new Scene(vbox, 1000, 150);
             //scene.setFill(null);
+            
+            checkbox.setLayoutX(10);
+            checkbox.setLayoutY(10);
 
+            checkbox.setOnAction(event -> {
+                scrolling = true;
+            });
 
             // Handle dragging
             vbox.setOnMousePressed(event -> {
@@ -193,7 +204,10 @@ public class welcome {
             current_sentence = transcript.getText();
             textArea.setText(text + " " + current_sentence);
 
-            textArea.selectPositionCaret(textArea.getLength());
+
+            if (scrolling){
+                textArea.selectPositionCaret(textArea.getLength());
+            }
 
         }
     }
@@ -204,7 +218,9 @@ public class welcome {
         textArea.setText(text);
         current_sentence = "";
 
-        textArea.selectPositionCaret(textArea.getLength());
+        if (scrolling){
+            textArea.selectPositionCaret(textArea.getLength());
+        }
 
     }
 }
