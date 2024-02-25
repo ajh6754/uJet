@@ -18,6 +18,8 @@ public class settings {
 
     private Scene settings_scene;
 
+    //private Stage audioStage = new Stage();
+
     private double txtFontSize;
     private Color txtColor;
 
@@ -124,24 +126,13 @@ public class settings {
         App.setRoot("welcome");
     }
 
-    @FXML
-    private CheckBox microphoneAudio;
-    
-    @FXML
-    private CheckBox chromeAudio;
-
-    @FXML
-    private CheckBox discordAudio;
-
-    @FXML
-    private Button save;
 
     @FXML
     private void openAudioWindow() throws IOException {
         // creates new window
-        Stage stage = new Stage();
-        stage.setTitle("Filter Audio");
-        stage.setScene(new Scene(App.loadFXML("audio"), 450, 450));
-        stage.show();
+        Stage audioStage = new Stage();
+        audioStage.setTitle("Filter Audio");
+        audioStage.setScene(new Scene(App.loadFXML("audio"), 450, 450));
+        audioStage.show();
     }
 }
