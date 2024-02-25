@@ -42,6 +42,9 @@
             <!-- FIGURE OUT HOW TO DEAL WITH THIS LATER, HAVE A SLIDER FROM 0-100? -->
             <TextField />
         </HBox>
+
+        <!-- IMPORTANT! USER CAN SPECIFY SIZE OF WINDOW! -->
+
         <!-- FUTURE PLAN, HIGHLIGHT CERTAIN WORDS LIKE NAMES -->
 
         <!-- GO BACK TO MAIN MENU -->

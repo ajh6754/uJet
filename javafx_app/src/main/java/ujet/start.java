@@ -9,4 +9,8 @@ public class start {
     private void switchToWelcome() throws IOException {
         App.setRoot("welcome");
     }
+
+    // NOTE: for testing purposes, simply print out the name of the app that has audio playing. 
+    // We can deal with the logistics of the AI detecting speech later.
+
 }
