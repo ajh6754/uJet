@@ -25,4 +25,9 @@ public class audio {
             System.out.println(lines.length);
         }
     }
+
+    @FXML
+    private void saveSettings(){
+        
+    }
 }
