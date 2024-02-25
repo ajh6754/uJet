@@ -8,6 +8,8 @@ import java.util.Properties;
 
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -121,6 +123,18 @@ public class settings {
     private void switchToWelcome() throws IOException {
         App.setRoot("welcome");
     }
+
+    @FXML
+    private CheckBox microphoneAudio;
+    
+    @FXML
+    private CheckBox chromeAudio;
+
+    @FXML
+    private CheckBox discordAudio;
+
+    @FXML
+    private Button save;
 
     @FXML
     private void openAudioWindow() throws IOException {
