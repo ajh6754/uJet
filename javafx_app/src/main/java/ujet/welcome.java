@@ -108,6 +108,7 @@ public class welcome {
             // Set the stage style to transparent and hide bar at top
             startStage.initStyle(StageStyle.TRANSPARENT);
             
+            textArea.setWrapText(true);
             // Make it non-editable
             textArea.setEditable(false);
 
