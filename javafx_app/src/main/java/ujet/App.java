@@ -20,6 +20,30 @@ public class App extends Application {
         scene = new Scene(loadFXML("welcome"), 640, 480);
         stage.setScene(scene);
         stage.show();
+
+        // shutdown hook to call pulseaudio --kill when this app terminates, async
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            // try statement for error checking
+            try 
+            {
+                // create and starts the process 
+                ProcessBuilder pb = new ProcessBuilder("pulseaudio", "--kill");
+                Process process = pb.start();
+
+                // record the exit code
+                int exitCode = process.waitFor();
+                if (exitCode == 0) 
+                {
+                    System.out.println("PulseAudio killed successfully");
+                } 
+                else 
+                {
+                    System.err.println("Failed to kill PulseAudio. Exit code: " + exitCode);
+                }
+            } catch (Exception e) {
+                System.err.println("Error killing PulseAudio: " + e.getMessage());
+            }
+        }));
     }
 
     static void setRoot(String fxml) throws IOException {
