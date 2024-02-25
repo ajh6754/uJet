@@ -11,10 +11,10 @@
    <children>
       <Label text="Filter Audio Sources" />
       <VBox alignment="CENTER" spacing="20.0">
-        <CheckBox fx:id="microphoneAudio" text="Microphone Audio" />
-        <CheckBox fx:id="chromeAudio" text="Chrome Audio" />
-        <CheckBox fx:id="discordAudio" text="Discord Audio" />
-        <Button fx:id="save" text="Save" onAction"#saveSettings"/>
+        <CheckBox fx:id="microphoneAudio" text="Microphone Audio" onAction="#toggleMic"/>
+        <CheckBox fx:id="chromeAudio" text="Chrome Audio" onAction="#toggleChrome"/>
+        <CheckBox fx:id="discordAudio" text="Discord Audio" onAction="#toggleDiscord"/>
+        <Button fx:id="save" text="Save"/>
       </VBox>
    </children>
    <padding>
