@@ -14,27 +14,34 @@ import javafx.stage.Stage;
 
 public class settings {
 
-    // VARIABLES
-
     private Scene settings_scene;
-
-    private settings settings;
 
     private double txtFontSize;
     private Color txtColor;
+
+    private File fontsFile = new File("font.properties");
+    private File colorFile = new File("color.properties");
 
     public void loadFromFile(File file) throws IOException {
         Properties properties = new Properties();
         try (FileInputStream in = new FileInputStream(file)) {
             properties.load(in);
-            txtFontSize = Double.parseDouble(properties.getProperty("fontSize"));
+            txtFontSize = Double.parseDouble(properties.getProperty("txtFontSize"));
             txtColor = Color.web(properties.getProperty("txtColor"));
         }
     }
 
-    public void saveToFile(File file) throws IOException {
+    
+    public void saveFontToFile(File file) throws IOException {
         Properties properties = new Properties();
         properties.setProperty("txtFontSize", Double.toString(txtFontSize));
+        try (FileOutputStream out = new FileOutputStream(file)) {
+            properties.store(out, null);
+        }
+    }
+
+    public void saveColorToFile(File file) throws IOException {
+        Properties properties = new Properties();
         properties.setProperty("txtColor", toRgbString(txtColor));
         try (FileOutputStream out = new FileOutputStream(file)) {
             properties.store(out, null);
@@ -62,16 +69,14 @@ public class settings {
     @FXML
     private TextField txtColorField;
 
-    // FUNCTIONS
-
     @FXML
     private void adjustFontSize() throws IOException {
         // Get font size from the TextField input
         String fontSizeStr = txtFontField.getText();
         try {
             double newSize = Double.parseDouble(fontSizeStr);
-            settings.setFontSize(newSize);
-            settings.saveToFile(new File("settings.properties"));
+            setFontSize(newSize);
+            saveFontToFile(fontsFile);
         } catch (NumberFormatException e) {
             System.err.println("Invalid font size input");
         }
@@ -84,10 +89,9 @@ public class settings {
         try {            
             // Parse the color, assuming input is in the format "#RRGGBB" or other valid CSS color formats
             Color newColor = Color.web(colorStr);
-            settings.setTxtColor(newColor);
-            settings.saveToFile(new File("settings.properties"));
+            setTxtColor(newColor);
+            saveColorToFile(colorFile);
         } catch (IllegalArgumentException e) {
-            // Handle invalid color input (e.g., show an error message)
             System.err.println("Invalid color input");
         }
     }
