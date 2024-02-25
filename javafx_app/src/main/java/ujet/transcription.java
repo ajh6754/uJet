@@ -1,6 +1,7 @@
 package ujet;
 
 import com.assemblyai.api.RealtimeTranscriber;
+import com.assemblyai.api.resources.realtime.types.PartialTranscript;
 
 import javax.sound.sampled.*;
 import java.io.IOException;
@@ -8,6 +9,14 @@ import java.io.IOException;
 import static java.lang.Thread.interrupted;
 
 public final class transcription {
+    
+    public String text = "";
+
+    public static void handlePartialTranscript(PartialTranscript transcript) {
+        if (!transcript.getText().isEmpty()) {
+            System.out.println("Partial: " + transcript.getText());
+        }
+    }
 
     public static void main(String... args) throws IOException {
         Thread thread = new Thread(() -> {
@@ -17,10 +26,7 @@ public final class transcription {
                         .sampleRate(16_000)
                         .onSessionBegins(sessionBegins -> System.out.println(
                                 "Session opened with ID: " + sessionBegins.getSessionId()))
-                        .onPartialTranscript(transcript -> {
-                            if (!transcript.getText().isEmpty())
-                                System.out.println("Partial: " + transcript.getText());
-                        })
+                        .onPartialTranscript(transcript -> handlePartialTranscript(transcript))
                         .onFinalTranscript(transcript -> System.out.println("Final: " + transcript.getText()))
                         .onError(err -> System.out.println("Error: " + err.getMessage()))
                         .endUtteranceSilenceThreshold(700)
