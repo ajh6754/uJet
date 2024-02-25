@@ -8,6 +8,8 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+import com.sun.jna.Pointer;
+
 /**
  * JavaFX App
  */
@@ -21,9 +23,8 @@ public class App extends Application {
         stage.setScene(scene);
         stage.show();    
 
-        // start the pulseaudio local server
-        //this.startDaemon();
         // start pulseaudio, cool beans
+        
         ProcessBuilder proc = new ProcessBuilder("pulseaudio", "--start");
         Process pulseaudio = proc.start();
 
@@ -50,12 +51,6 @@ public class App extends Application {
                 System.err.println("Error killing PulseAudio: " + e.getMessage());
             }
         }));
-    }
-
-    // starts the local server for PulseAudio
-    private void startDaemon() throws IOException
-    {
-        
     }
 
     static void setRoot(String fxml) throws IOException {
