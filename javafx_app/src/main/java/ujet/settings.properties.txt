@@ -1,0 +1,2 @@
+txtFontSize=14.0
+txtColor=#000000

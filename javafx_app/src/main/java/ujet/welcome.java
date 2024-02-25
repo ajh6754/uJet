@@ -36,7 +36,8 @@ public class welcome {
             
             // Create a TextArea for the changing text
             TextArea textArea = new TextArea();
-            textArea.setEditable(false); // Make it non-editable
+            // Make it non-editable
+            textArea.setEditable(false);
 
             //textArea.setOpacity(0.5);
             // Set the TextArea background to transparent and the text to be black
