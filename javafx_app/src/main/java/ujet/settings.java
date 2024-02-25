@@ -22,15 +22,20 @@ public class settings {
     private File fontsFile = new File("font.properties");
     private File colorFile = new File("color.properties");
 
-    public void loadFromFile(File file) throws IOException {
+    public void loadSizeFromFile(File file) throws IOException {
         Properties properties = new Properties();
         try (FileInputStream in = new FileInputStream(file)) {
             properties.load(in);
             txtFontSize = Double.parseDouble(properties.getProperty("txtFontSize"));
+        }
+    }
+    public void loadColorFromFile(File file) throws IOException {
+        Properties properties = new Properties();
+        try (FileInputStream in = new FileInputStream(file)) {
+            properties.load(in);
             txtColor = Color.web(properties.getProperty("txtColor"));
         }
     }
-
     
     public void saveFontToFile(File file) throws IOException {
         Properties properties = new Properties();
@@ -48,7 +53,7 @@ public class settings {
         }
     }
 
-    private String toRgbString(Color color) {
+    public String toRgbString(Color color) {
         int r = (int) (color.getRed() * 255);
         int g = (int) (color.getGreen() * 255);
         int b = (int) (color.getBlue() * 255);
@@ -61,6 +66,22 @@ public class settings {
 
     private void setTxtColor(Color rgbColor){
         txtColor = rgbColor;
+    }
+
+    public File getFontsField() {
+        return fontsFile;
+    }
+
+    public File getColorField() {
+        return colorFile;
+    }
+
+    public double getFontSize() {
+        return txtFontSize;
+    }
+
+    public Color getTxtColor() {
+        return txtColor;
     }
 
     @FXML

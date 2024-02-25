@@ -2,6 +2,7 @@ package ujet;
 
 import static java.lang.Thread.interrupted;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -23,6 +24,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import okhttp3.internal.http2.Settings;
 import javafx.stage.Screen;
 
 import javafx.scene.input.KeyCode;
@@ -34,6 +36,8 @@ public class welcome {
     public boolean running = true;
 
     public Stage startStage;
+
+    private settings settings = new settings();
 
     private double xOffset = 0;
     private double yOffset = 0;
@@ -89,19 +93,27 @@ public class welcome {
     @FXML
     private void switchToStart() throws IOException {
         if (startStage == null) {
+
+            settings.loadSizeFromFile(settings.getFontsField());
+            double fontSize = settings.getFontSize();
+            System.out.println(fontSize);
+
+            settings.loadColorFromFile(settings.getColorField());
+            Color txtColor = settings.getTxtColor();
+            String txtColorStr = settings.toRgbString(txtColor);
+            System.out.println(txtColorStr);
+
             // Create a new Stage
             Stage startStage = new Stage();
             // Set the stage style to transparent and hide bar at top
             startStage.initStyle(StageStyle.TRANSPARENT);
-            
-            // Create a TextArea for the changing text
             
             // Make it non-editable
             textArea.setEditable(false);
 
             //textArea.setOpacity(0.5);
             // Set the TextArea background to transparent and the text to be black
-            textArea.setStyle("-fx-text-fill: black; -fx-font-size: 20;");
+            textArea.setStyle("-fx-text-fill:" + txtColorStr + "; -fx-font-size:" + fontSize + ";");
             textArea.appendText("This is a conversation\n" + "Very interesting :D");
             thread.start();
             
