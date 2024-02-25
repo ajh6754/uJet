@@ -192,6 +192,9 @@ public class welcome {
             System.out.println("Partial: " + transcript.getText());
             current_sentence = transcript.getText();
             textArea.setText(text + " " + current_sentence);
+
+            textArea.selectPositionCaret(textArea.getLength());
+
         }
     }
 
@@ -200,5 +203,8 @@ public class welcome {
         text = text + " " + transcript.getText();
         textArea.setText(text);
         current_sentence = "";
+
+        textArea.selectPositionCaret(textArea.getLength());
+
     }
 }
