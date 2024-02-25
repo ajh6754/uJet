@@ -31,7 +31,8 @@ public class welcome {
         if (startStage == null) {
             // Create a new Stage
             Stage startStage = new Stage();
-            startStage.initStyle(StageStyle.TRANSPARENT); // Set the stage style to transparent and hide bar at top
+            // Set the stage style to transparent and hide bar at top
+            startStage.initStyle(StageStyle.TRANSPARENT);
             
             // Create a TextArea for the changing text
             TextArea textArea = new TextArea();
