@@ -1,5 +1,5 @@
-package ujet.JNA;
-/* 
+package ujet;
+
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
@@ -17,8 +17,6 @@ public interface PulseAudioLibrary extends Library
     // for deallocating the context with pulseaudio
     void pa_context_unref(Pointer context);
 
-    // So we have the context
-
     // const pa_sample_spec * pa_stream_get_sample_spec (pa_stream *s)
     Pointer pa_stream_get_sample_spec(Pointer pa_stream);
 
@@ -26,5 +24,9 @@ public interface PulseAudioLibrary extends Library
     // Create a new, unconnected stream with the specified name and sample type
     Pointer pa_stream_new(Pointer pa_context, String name, Pointer p_sample_spec, Pointer pa_channel_map);
 
+    // pa_mainloop * 	pa_mainloop_new (void)
+    // initialize a new mainloop, cash money
+    Pointer pa_mainloop_new();
+
     // pactl list sink-inputs - May not be what we need, BUT progress towards detecting audio
-}   */
+}   

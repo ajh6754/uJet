@@ -4,34 +4,37 @@ import javax.sound.sampled.*;
 
 import javafx.fxml.FXML;
 
-import java.io.IOException;
+import com.sun.jna.Pointer;
 
 // if we can somehow access the software mixer, we should be able to have access to the apps sending info to the mixer?
 
 public class audio {
-    protected Mixer.Info[] mixer_info = AudioSystem.getMixerInfo();
-    //protected Line[] lines = AudioSystem.getMixer(mixer_info[0]).getTargetLines();
+    // VARIABLES
+
+    // obtain context to work with
+    private Pointer context;
+
+    // mainloop to create context with
+    private Pointer mainloop;
 
     // starts the PulseAudio Daemon for intercepting audio channels
-    @FXML
-    private void startDaemon() throws IOException
+
+    public void initialize()
     {
-        // start pulseaudio, cool beans
-        ProcessBuilder proc = new ProcessBuilder("pulseaudio --start");
-        Process pulseaudio = proc.start();
+        // Create a main event loop
+        this.mainloop = PulseAudioLibrary.AUDIO_LIBRARY.pa_mainloop_new();
+        // initialize the first context
+        this.context = PulseAudioLibrary.AUDIO_LIBRARY.pa_context_new(this.mainloop, "uJet");
+
+        // shutdown hook to deallocate
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            PulseAudioLibrary.AUDIO_LIBRARY.pa_context_unref(this.context);
+        }));
     }
 
     @FXML
     private void getInfo()
     {
-        //System.out.println(lines[0].toString());
-        //System.out.println(lines.length);
 
-        for(int i = 0; i < mixer_info.length; i++)
-        {
-            Line[] lines = AudioSystem.getMixer(mixer_info[i]).getTargetLines();
-            System.out.println(mixer_info[i].toString());
-            System.out.println(lines.length);
-        }
     }
 }

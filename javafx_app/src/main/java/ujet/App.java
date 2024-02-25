@@ -19,7 +19,13 @@ public class App extends Application {
     public void start(Stage stage) throws IOException {
         scene = new Scene(loadFXML("welcome"), 640, 480);
         stage.setScene(scene);
-        stage.show();
+        stage.show();    
+
+        // start the pulseaudio local server
+        //this.startDaemon();
+        // start pulseaudio, cool beans
+        ProcessBuilder proc = new ProcessBuilder("pulseaudio", "--start");
+        Process pulseaudio = proc.start();
 
         // shutdown hook to call pulseaudio --kill when this app terminates, async
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -44,6 +50,12 @@ public class App extends Application {
                 System.err.println("Error killing PulseAudio: " + e.getMessage());
             }
         }));
+    }
+
+    // starts the local server for PulseAudio
+    private void startDaemon() throws IOException
+    {
+        
     }
 
     static void setRoot(String fxml) throws IOException {
