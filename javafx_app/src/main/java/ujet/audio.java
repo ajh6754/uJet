@@ -15,6 +15,9 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.stage.Stage;
 
 //import org.jitsi.*;
 
@@ -51,7 +54,46 @@ public class audio {
     }
 
     @FXML
+    private void toggleMic(){
+
+    }
+
+    @FXML
+    private void toggleDiscord(){
+
+    }
+
+    @FXML
+    private void toggleChrome(){
+
+    }
+
+    @FXML
+    private CheckBox microphoneAudio;
+    
+    @FXML
+    private CheckBox chromeAudio;
+
+    @FXML
+    private CheckBox discordAudio;
+
+    @FXML
+    private Button save;
+
+    // Initialize your controller
+    @FXML
+    public void initialize() {
+        save.setOnAction(event -> {
+            saveSettings();
+        });
+    }
+
+    @FXML
     private void saveSettings(){
-        
+        // Get a reference to the stage
+        Stage stage = (Stage) save.getScene().getWindow();
+        // Close it
+        stage.close();
     }
 }
+
