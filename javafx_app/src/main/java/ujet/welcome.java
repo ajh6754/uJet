@@ -38,6 +38,8 @@ import javafx.scene.input.KeyCode;
 
 public class welcome {
 
+    private static Object lock = new Object();
+
     public TextArea textArea = new TextArea();
 
     public CheckBox checkbox = new CheckBox();
@@ -83,7 +85,11 @@ public class welcome {
             while (!interrupted() && running) {
                 // Read the next chunk of data from the TargetDataLine.
                 line.read(data, 0, data.length);
-                realtimeTranscriber.sendAudio(data);
+                synchronized(lock)
+                {
+                    realtimeTranscriber.sendAudio(data);
+                }
+                    
             }
 
             System.out.println("Stopping recording");
@@ -119,113 +125,6 @@ public class welcome {
             String app_name = "";
 
             // initialize the app list
-
-            // for now, just get it to recognize chrome and whatnot, don't care about anything else.
-            
-            while ((line = reader.readLine()) != null) {
-                // for every "Sink Input", get the id
-                if(line.contains("Sink Input #"))
-                    sink_id = Integer.parseInt(line.split("#")[1].trim());
-
-                // for every "application.name" fire a thread that creates a loopback
-                if(line.contains("application.name"))
-                {
-                    // get the name of the app
-                    app_name = line.split("=")[1].trim();
-
-                    System.out.println(app_name);
-
-                    // create a defensive copy of the id
-                    final int personal_id = sink_id;
-                    // create a defensive copy of app_name
-                    final String personal_app_name = app_name;
-
-                    // fire the thread off, 
-                    Thread computer = new Thread(() -> {
-                        Random random = new Random();
-                        int r = random.nextInt();
-
-                        // Use the personal app name inside the thread
-
-                        // whenever audio detected, try to copy the stuff from the other threads, but get the data
-
-                        // create the new loopback
-                        ProcessBuilder get_loopback = new ProcessBuilder("pactl", "load-module", ""+personal_id);
-                        // Start the process
-                        try {
-                            Process create_loopback = get_loopback.start();
-                        } catch (IOException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-                        
-                        // create the eternal while loop or something idk
-
-                        // this while loop will work infinitely getting bytes
-
-                        while(true)
-                        {
-                            // lock so that the commands are ok
-                            // the audio buffer
-                            byte[] buffer = new byte[4096];
-                            int bytes_read = 0;
-                            //parec --format=s16le --rate=44100 --channels=2 --device=loopback_device_name
-                            ProcessBuilder bytesGetter = new ProcessBuilder("parec", "--format=s16le", "--rate=44100", "--channels=2", "--device=bluez_output.7C_96_D2_91_12_71.1.monitor");//personal_app_name);
-                            try {
-                                Process getting_bytes = bytesGetter.start();
-                                InputStream inputStream = getting_bytes.getInputStream();
-                                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-                                int x = 0;
-
-                                // read bytes until over
-                                while((bytes_read = inputStream.read(buffer)) != -1)
-                                {
-                                    //System.out.println(personal_app_name + " Just played a sound");
-                                    outputStream.write(buffer, 0, bytes_read);
-                                    //outputStream.write()
-
-                                    // Get the captured audio data as a byte array
-                                    //byte[] audioData = outputStream.toByteArray();
-                                    byte[] audioData = outputStream.toByteArray();
-
-                                    /* 
-                                    if(x < 100 || random.nextInt() % 19 == 0)
-                                    {
-                                        AudioFormat format = new AudioFormat(44100, 16, 2, true, false);
-                                        AudioInputStream ais = new AudioInputStream(new ByteArrayInputStream(audioData), format, audioData.length / format.getFrameSize());
-                                        AudioSystem.write(ais, AudioFileFormat.Type.WAVE, new File(r + ".wav"));
-                                    }*/
-
-                                    x++;
-                                    // flush the output stream
-                                    outputStream.flush();
-
-                                    // if i were to send these bytes, i'd need to send the name/id as well for easy differentiation
-                                }
-                                // wait for parex to end
-                                process.waitFor();
-                                
-                                //inputStream.close();
-                                //outputStream.close();
-                            } catch (IOException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            } catch (InterruptedException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            }
-                        }
-                        
-                    });
-                    computer.start(); // Start the thread
-                    
-                }
-            }
-
-            /**
-             * 
-             */
 
             settings.loadSizeFromFile(settings.getFontsField());
             double fontSize = settings.getFontSize();
@@ -322,6 +221,121 @@ public class welcome {
 
             // Close the welcome page
             ((Stage) App.getScene().getWindow()).hide();
+
+            // for now, just get it to recognize chrome and whatnot, don't care about anything else.
+            
+            /**
+             * 
+             */
+            while ((line = reader.readLine()) != null) {
+                // for every "Sink Input", get the id
+                if(line.contains("Sink Input #"))
+                    sink_id = Integer.parseInt(line.split("#")[1].trim());
+
+                // for every "application.name" fire a thread that creates a loopback
+                if(line.contains("application.name"))
+                {
+                    // get the name of the app
+                    app_name = line.split("=")[1].trim();
+
+                    System.out.println(app_name);
+
+                    // create a defensive copy of the id
+                    final int personal_id = sink_id;
+                    // create a defensive copy of app_name
+                    final String personal_app_name = app_name;
+
+                    // fire the thread off, 
+                    Thread computer = new Thread(() -> {
+                        Random random = new Random();
+                        int r = random.nextInt();
+
+                        // Use the personal app name inside the thread
+
+                        // whenever audio detected, try to copy the stuff from the other threads, but get the data
+
+                        // create the new loopback
+                        ProcessBuilder get_loopback = new ProcessBuilder("pactl", "load-module", ""+personal_id);
+                        // Start the process
+                        try {
+                            Process create_loopback = get_loopback.start();
+                        } catch (IOException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                        
+                        // create the eternal while loop or something idk
+
+                        // this while loop will work infinitely getting bytes
+
+                        while(true)
+                        {
+                            // lock so that the commands are ok
+                            // the audio buffer
+                            byte[] buffer = new byte[4096];
+                            int bytes_read = 0;
+                            //parec --format=s16le --rate=44100 --channels=2 --device=loopback_device_name
+                            ProcessBuilder bytesGetter = new ProcessBuilder("parec", "--format=s16le", "--rate=44100", "--channels=2", "--device=bluez_output.7C_96_D2_91_12_71.1.monitor");//personal_app_name);
+                            try {
+                                Process getting_bytes = bytesGetter.start();
+                                InputStream inputStream = getting_bytes.getInputStream();
+                                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+                                RealtimeTranscriber realtimeTranscriber = RealtimeTranscriber.builder()
+                                .apiKey("cebb373d43634ade8fa2a0b9bee83808")
+                                .sampleRate(16_000)
+                                .onSessionBegins(sessionBegins -> System.out.println(
+                                        "Session opened with ID: " + sessionBegins.getSessionId()))
+                                .onPartialTranscript(transcript -> handlePartialTranscript(transcript))
+                                .onFinalTranscript(transcript -> handleFinalTranscript(transcript))
+                                .onError(err -> System.out.println("Error: " + err.getMessage()))
+                                .endUtteranceSilenceThreshold(700)
+                                .build();
+
+                                System.out.println("Connecting to real-time transcript service");
+                                realtimeTranscriber.connect();
+
+                                // This is where the magic happens
+                                System.out.println("Starting recording!");
+                                AudioFormat format = new AudioFormat(16_000, 16, 1, true, false);
+
+                                //byte[] data = new byte[4096];
+
+                                // read bytes until over
+                                while((bytes_read = inputStream.read(buffer)) != -1)
+                                {
+                                    outputStream.write(buffer, 0, bytes_read);
+                                    synchronized(lock)
+                                    {
+                                        realtimeTranscriber.sendAudio(buffer);
+                                    }
+
+                                    // flush the output stream
+                                    outputStream.flush();
+
+                                    // if i were to send these bytes, i'd need to send the name/id as well for easy differentiation
+                                }
+                                // wait for parex to end
+                                process.waitFor();
+                                
+                                //inputStream.close();
+                                //outputStream.close();
+                                realtimeTranscriber.close();
+                            } catch (IOException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            } catch (InterruptedException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+                        }
+                        
+                    });
+                    computer.start(); // Start the thread
+                    
+                }
+            }
+
         }
     }
 

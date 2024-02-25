@@ -40,13 +40,6 @@ public class audio {
 
     // Print that Google Chrome is saying stuff, but the latency related crap might be hard...
 
-
-    // starts the PulseAudio Daemon for intercepting audio channels
-    public void initialize() throws IOException, InterruptedException
-    {
-        
-    }
-
     @FXML
     private void getInfo()
     {
