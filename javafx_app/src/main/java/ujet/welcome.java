@@ -148,6 +148,7 @@ public class welcome {
             // Set the TextArea background to transparent and the text to be black
             textArea.setStyle("-fx-text-fill:" + txtColorStr + "; -fx-font-size:" + fontSize + ";");
             textArea.appendText("This is a conversation\n" + "Very interesting :D");
+            /* 
             thread.start();
             
             startStage.setOnCloseRequest(event -> {
@@ -227,6 +228,7 @@ public class welcome {
             /**
              * 
              */
+            /* 
             while ((line = reader.readLine()) != null) {
                 // for every "Sink Input", get the id
                 if(line.contains("Sink Input #"))
@@ -246,6 +248,7 @@ public class welcome {
                     final String personal_app_name = app_name;
 
                     // fire the thread off, 
+                    /* 
                     Thread computer = new Thread(() -> {
                         Random random = new Random();
                         int r = random.nextInt();
@@ -334,7 +337,7 @@ public class welcome {
                     computer.start(); // Start the thread
                     
                 }
-            }
+            }*/
 
         }
     }
@@ -363,5 +366,28 @@ public class welcome {
             textArea.selectPositionCaret(textArea.getLength());
         }
 
+    }
+
+    @FXML
+    // First, get the different audio sources.
+    // Then, make it switch to a different pane that captions.
+    private void testAudio()
+    {
+        // at this point, the server is already activated- just need to use C functions to get what we need.
+
+        // OK, so initializes the audio sources to get stuff from- call this in a thread.
+        Thread initialize = new Thread(() ->
+        {
+            PulseAudioLibrary.AUDIO_LIBRARY.initialize_sources();
+        });
+        initialize.start();
+
+        System.out.println("Finished");
+
+        // TODO - later, change it so that both the pipes and your speakers get the audio,but for now get it isolated.
+        
+        // When obtaining audio from the pipe, check the last time it was updated. If it's the same, then skip.
+
+        // Make sure you DELETE the pipe in tmp...
     }
 }

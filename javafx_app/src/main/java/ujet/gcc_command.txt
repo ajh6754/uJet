@@ -1,0 +1,1 @@
+gcc -shared -fPIC -o libujet.so audio.c hash.c -lpulse -I/path/to/pulseaudio/include

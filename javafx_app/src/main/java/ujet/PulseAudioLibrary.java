@@ -9,9 +9,9 @@ import com.sun.jna.ptr.PointerByReference;
 
 public interface PulseAudioLibrary extends Library
 {
-    // loading pulse audio
-    PulseAudioLibrary AUDIO_LIBRARY = Native.load("pulse", PulseAudioLibrary.class);
+    // loading custom pulse audio library here
+    PulseAudioLibrary AUDIO_LIBRARY = Native.load("ujet", PulseAudioLibrary.class);
 
-    
-
+    // initialize sources
+    void initialize_sources();
 }   
