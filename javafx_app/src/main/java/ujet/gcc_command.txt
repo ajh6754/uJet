@@ -1,1 +1,3 @@
-gcc -shared -fPIC -o libujet.so audio.c hash.c -lpulse -I/path/to/pulseaudio/include
+gcc -shared -fPIC -o libujet.so audio.c -lpulse -I/path/to/pulseaudio/include
+
+in order to debug, call gdb on the javafx process (find it using ps aux | grep java)

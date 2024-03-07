@@ -43,21 +43,29 @@ typedef struct audio_info
 /// FUNCTIONS
 
 // the callback function for obtaining/writing audio
-void audio_obtained_callback(pa_stream * s, size_t length, void * userdata)
+void audio_obtained_callback(pa_stream * s, void * userdata)
 {
-    // write to the pipe ig, but how? 
-
-    // get filename
-    //char * filename = get(table, s->)
-
-    // see if in hashtable- if not, return
     
+    //FILE * f = fopen("test.txt", "w");
+    //fprintf(f, "Test\n");
+    printf("Callback!\n");
+    // Allocate buffer to store raw audio data
+    //uint8_t buffer[length];
+
+    // Read data from the stream into the buffer
+    //pa_stream_peek(s, &buffer, &length);
+
+    // read the userdata to get the name of the application.
+    
+    // call the java function processAudio(byte[] audio, string source); //pending
+
+    // need to deal with not simultaneously stopping audio...
 
     return;
 }
 
 // the callback function for obtained sink inputs
-void sink_input_callback(pa_context *c, const pa_sink_input_info * info, int eol, void * userdata)
+void sink_input_callback(pa_context * context, const pa_sink_input_info * info, int eol, void * userdata)
 {
     // update sinks
     got_sinks = -1;
@@ -68,61 +76,28 @@ void sink_input_callback(pa_context *c, const pa_sink_input_info * info, int eol
     // get the proplist associated with the sink input
     const pa_proplist * proplist = info->proplist;
 
-    // Retrieve the value of each property
+    // Retrieve the name of the app
     const char * name = pa_proplist_gets(proplist, "application.name");
 
-    // create a new filename string
-    char * filename = malloc(MAX_FILENAME_SIZE);
-    sprintf(filename, "/tmp/%u_%s", id, name);
-    printf("%s\n", filename);
+    // create a new steram inside this function. Gets called for each input so should be good. Use id as the id.
 
-    // first, check if file exists- delete then replace.
-    if (!access(filename, F_OK)) 
-    {
-        printf("Already exists\n");
-        // delete it
-        unlink(filename);
-    }
-    
-    // call mkfifo to MAKE THE PIPE! check for errors along the way
-    if (mkfifo(filename, MODE) == -1) 
-    {
-        perror("Error with mkfifo");
-        return ;
-    }
-
-    // free the filename
-    free(filename);
-
-    // update the GLOBAL HASHTABLE so that the audio obtained callback can deal with it
-    //insert(table, name, filename);
-
-    // whenever java reads that, the data is automatically removed.
-
-    // TODO
-
-    // 1. create a new steram inside this function. Gets called for each input so should be good. Use id as the id.
+    // NOTE- has not been tested yet. MUST be tested.
 
     // Create a new stream
-    //pa_stream *stream = pa_stream_new(/* parameters */);
+    pa_stream * stream = pa_stream_new(context, name, &sample_spec, NULL);
 
     // Set up the stream parameters
-    //pa_stream_connect_playback(stream, NULL, NULL, PA_STREAM_NOFLAGS, NULL, NULL);
-
-    // Set the sink input index as the destination for the stream
-    //pa_stream_set_sink_input(stream, sink_input_index, NULL, NULL);
+    pa_stream_connect_playback(stream, NULL, NULL, PA_STREAM_NOFLAGS, NULL, NULL);
 
     // Set the stream state callback
-    //pa_stream_set_state_callback(stream, stream_state_callback, NULL);
-
-    // Connect the stream to the server
-    //pa_stream_connect(stream, NULL, PA_STREAM_NOFLAGS, NULL);
+    pa_stream_set_state_callback(stream, audio_obtained_callback, (void *) name);
 
     // this SHOULD create a stream directly from the sink input.
 
     return ;
 }
 
+/// callback for all the contexts
 void context_state_callback(pa_context * context, void *userdata) {
     // get the state
     pa_context_state_t state = pa_context_get_state(context);
@@ -142,7 +117,7 @@ void context_state_callback(pa_context * context, void *userdata) {
             printf("PulseAudio context state: SETTING_NAME\n");
             break;
         case PA_CONTEXT_READY:
-            // get sink inputs
+            // get sink inputs TODO need better way to deal with too many calls
             if(got_sinks)
                 pa_context_get_sink_input_info_list(context, sink_input_callback, NULL);
             printf("PulseAudio context state: READY\n");
@@ -201,7 +176,6 @@ void initialize_sources()
     // When new audio is ready, use pa_stream_set_write_callback(). This will deal with audio writing.
 
     int ret;
-
     
     while ((ret = pa_mainloop_iterate(mainloop, 0, NULL)) >= 0) 
     {
